@@ -12,17 +12,16 @@ const connectionSchema = z.object({
 
 const NODE_ENV = env.NODE_ENV ?? "development";
 
-const knegConfigs: Record<typeof NODE_ENV, Knex.Config> = {
+const knexConfigs: Record<typeof NODE_ENV, Knex.Config> = {
     development: {
         client: "pg",
-        connection: () =>
-            connectionSchema.parse({
-                host: env.POSTGRES_HOST ?? "localhost",
-                port: env.POSTGRES_PORT ?? 5432,
-                database: env.POSTGRES_DB ?? "postgres",
-                user: env.POSTGRES_USER ?? "postgres",
-                password: env.POSTGRES_PASSWORD ?? "postgres",
-            }),
+        connection: {
+            host: env.POSTGRES_HOST,
+            port: env.POSTGRES_PORT,
+            database: env.POSTGRES_DB,
+            user: env.POSTGRES_USER,
+            password: env.POSTGRES_PASSWORD,
+        },
         pool: {
             min: 2,
             max: 10,
@@ -41,14 +40,13 @@ const knegConfigs: Record<typeof NODE_ENV, Knex.Config> = {
     },
     production: {
         client: "pg",
-        connection: () =>
-            connectionSchema.parse({
-                host: env.POSTGRES_HOST,
-                port: env.POSTGRES_PORT,
-                database: env.POSTGRES_DB,
-                user: env.POSTGRES_USER,
-                password: env.POSTGRES_PASSWORD,
-            }),
+        connection: {
+            host: env.POSTGRES_HOST,
+            port: env.POSTGRES_PORT,
+            database: env.POSTGRES_DB,
+            user: env.POSTGRES_USER,
+            password: env.POSTGRES_PASSWORD,
+        },
         pool: {
             min: 2,
             max: 10,
@@ -60,11 +58,11 @@ const knegConfigs: Record<typeof NODE_ENV, Knex.Config> = {
             extension: "js",
         },
         seeds: {
-            stub: 'src/config/knex/seed.stub.js',
+            stub: 'dist/config/knex/seed.stub.js',
             directory: "./dist/postgres/seeds",
             extension: "js",
         },
     },
 };
 
-export default knegConfigs[NODE_ENV];
+export default knexConfigs[NODE_ENV];
